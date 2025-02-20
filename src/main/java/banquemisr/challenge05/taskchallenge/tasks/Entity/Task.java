@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Table
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Task {
@@ -40,6 +40,18 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Priority priority = Priority.MEDIUM;
+
+    @Column(name = "duedate")
+    private Date dueDate;
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
 
     public enum Priority {
         LOW, MEDIUM, HIGH

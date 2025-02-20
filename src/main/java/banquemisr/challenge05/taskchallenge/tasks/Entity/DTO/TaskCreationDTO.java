@@ -1,9 +1,9 @@
 package banquemisr.challenge05.taskchallenge.tasks.Entity.DTO;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.*;
+
+import java.util.Date;
 
 public class TaskCreationDTO {
 
@@ -22,6 +22,18 @@ public class TaskCreationDTO {
 
     @Pattern(regexp = "LOW|MEDIUM|HIGH", message = "Invalid status value")
     private String priority = "MEDIUM";
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Future(message = "Due date must be in the future")
+    private Date dueDate;
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
 
     public String getTitle() {
         return title;

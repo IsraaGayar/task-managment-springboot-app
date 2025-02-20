@@ -28,6 +28,17 @@ public class AppUser implements UserDetails{
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
+    @Column(nullable = false)
+    private Boolean admin = false;
+
     @Column(unique = true, length = 100, nullable = false)
     private String username;
 
@@ -42,10 +53,19 @@ public class AppUser implements UserDetails{
     @Column(name = "updated_at")
     private Date updatedAt;
 
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false)
+//    private List<UserRole> roles = new List(UserRole.USER_ROLE);
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @ElementCollection(targetClass = UserRole.class)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    private List<UserRole> roles = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
-
 
     @Override
     public boolean isAccountNonExpired() {
@@ -65,6 +85,7 @@ public class AppUser implements UserDetails{
     }
 
     public AppUser() {
+        roles.add(UserRole.USER_ROLE); // Add the initial role
     }
 
     public AppUser(String fullName,
@@ -74,6 +95,28 @@ public class AppUser implements UserDetails{
         this.email = email;
         this.password = password;
         this.username = email;
+    }
+    public enum UserRole {
+        USER_ROLE, ADMIN_ROLE
+    }
+
+    public List<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<UserRole> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(UserRole role) {
+        if  (role == UserRole.USER_ROLE.ADMIN_ROLE){
+            this.admin=true;
+        }
+        this.roles.add(role);
+    }
+
+    public boolean isAdmin() {
+        return this.roles.contains(UserRole.ADMIN_ROLE);
     }
 
     @Override

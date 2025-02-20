@@ -31,19 +31,15 @@ public class TaskController {
     @GetMapping("/tasks")
     public Page<TaskRetrievalDTO> ListTasks(
             @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable,
-//            @RequestParam(value = "search", required = false) String search
             @RequestParam(required = false) Map<String, String> filters // Map of filter fields and values
     ) {
-
         List<String> keysToRemove = Arrays.asList("sort", "page", "size");
         filters.keySet().removeAll(keysToRemove);
         Specification<Task> spec = Specification.where(null);
         for (Map.Entry<String, String> entry : filters.entrySet()) {
             spec = spec.and(GenericFilterSpecification.filterBy(entry.getKey(), entry.getValue()));}
-
         Page<TaskRetrievalDTO> tasks = taskService.getGeniricTasks(spec, pageable);
         return tasks;
-//        return taskService.getTasks2(pageable);
     }
 
 
@@ -56,7 +52,7 @@ public class TaskController {
     @PatchMapping("/tasks/{id}") // Update all fields in one endpoint
     public ResponseEntity<?>  patchTask(
             @PathVariable UUID id,
-            @RequestBody TaskUpdateDTO taskUpdateDTO,
+            @Valid @RequestBody TaskUpdateDTO taskUpdateDTO,
             @AuthenticationPrincipal AppUser loggedUser) throws CustomAppException{
         return ResponseEntity.ok(
                 taskService.updateTask(id, taskUpdateDTO, loggedUser));
@@ -71,10 +67,23 @@ public class TaskController {
         return ResponseEntity.ok(taskService.saveTask(task, loggedUser));
     }
 
+    @PostMapping("/tasks/{id}/re-assign")
+    public ResponseEntity<?> reAssignTask(
+            @PathVariable UUID id,
+            @Valid @RequestBody TaskUpdateDTO task,
+            @AuthenticationPrincipal AppUser loggedUser) throws CustomAppException{
+        if (loggedUser.getAdmin()){
+            return ResponseEntity.ok(taskService.reAssignTask(id, task, loggedUser));
+        }else{
+            throw new CustomAppException("Only Admin Users are allowed to reassign tasks");
+        }
+    }
+
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<?> deleteTask(
-            @PathVariable UUID id) throws CustomAppException{
-        taskService.deleteTask(id);
+            @PathVariable UUID id,
+            @AuthenticationPrincipal AppUser loggedUser) throws CustomAppException{
+        taskService.deleteTask(id, loggedUser);
         ResponseEntity res = new ResponseEntity(HttpStatus.NO_CONTENT);
         return ResponseEntity.noContent().build();
     }

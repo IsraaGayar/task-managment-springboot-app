@@ -42,6 +42,7 @@ public class TaskServiceImpl implements TaskService {
         return task;
     }
 
+
     @Override
     public TaskRetrievalDTO updateTask(
             UUID id, TaskUpdateDTO taskDTO, AppUser loggedUser) throws CustomAppException {
@@ -57,10 +58,28 @@ public class TaskServiceImpl implements TaskService {
         if (taskDTO.getDescription() != null) {
             task.setDescription(taskDTO.getDescription());
         }
+        if (taskDTO.getDueDate() != null) {
+            task.setDueDate(taskDTO.getDueDate());
+        }
         taskRepository.save(task);
         TaskRetrievalDTO updatedTaskDTO = convertTaskToDTO(task);
         return updatedTaskDTO;
     }
+
+    @Override
+    public TaskRetrievalDTO reAssignTask(UUID id, TaskUpdateDTO taskDTO, AppUser loggedUser) throws CustomAppException {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new CustomAppException("Task not found with id:" + id));
+
+        if (taskDTO.getOwner_id() != null) {
+            AppUser user = userRepository.findById(taskDTO.getOwner_id())
+                    .orElseThrow(() -> new CustomAppException(
+                            "Owner User not found with id:" + taskDTO.getOwner_id()));
+            task.setOwner(user);
+        }
+        taskRepository.save(task);
+        TaskRetrievalDTO updatedTaskDTO = convertTaskToDTO(task);
+        return updatedTaskDTO;    }
 
 
     @Override
@@ -85,8 +104,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(UUID id) throws CustomAppException {
+    public void deleteTask(UUID id, AppUser loggedUser) throws CustomAppException {
         try {
+//            check if the logged in user is an admin or the owner, or else dont delete
             taskRepository.deleteById(id);
         }catch (Exception e){
             throw new CustomAppException("Cant delete Task -> " + e.getMessage());
@@ -98,6 +118,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = new Task();
         task.setTitle(taskDTO.getTitle());
         task.setDescription(taskDTO.getDescription());
+        task.setDueDate(taskDTO.getDueDate());
         task.setStatus(Task.Status.valueOf(taskDTO.getStatus()));
         task.setPriority(Task.Priority.valueOf(taskDTO.getPriority()));
         AppUser owner;
@@ -121,6 +142,7 @@ public class TaskServiceImpl implements TaskService {
         TaskRetrievalDTO task = new TaskRetrievalDTO();
         task.setId(createdTask.getId());
         task.setTitle(createdTask.getTitle());
+        task.setDueDate(createdTask.getDueDate());
         task.setDescription(createdTask.getDescription());
         task.setStatus(createdTask.getStatus());
         task.setPriority(createdTask.getPriority());

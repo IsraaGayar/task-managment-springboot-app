@@ -3,6 +3,7 @@ package banquemisr.challenge05.taskchallenge.tasks.Entity.DTO;
 import banquemisr.challenge05.taskchallenge.tasks.Entity.Task;
 import banquemisr.challenge05.taskchallenge.user.entities.DTO.PublicUserDto;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class TaskRetrievalDTO {
@@ -12,6 +13,16 @@ public class TaskRetrievalDTO {
     private PublicUserDto owner;
     private Task.Status status;
     private Task.Priority priority;
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    private Date dueDate;
 
     public Task.Priority getPriority() {
         return priority;
