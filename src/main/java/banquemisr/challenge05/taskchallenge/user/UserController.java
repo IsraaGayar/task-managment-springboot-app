@@ -17,10 +17,7 @@ public class UserController {
     public UserService userService;
 
     @GetMapping("/user")
-//    public String user(Authentication authentication){
     public AppUser user(@AuthenticationPrincipal AppUser user){
-//        return "Welcome " + userDetails.getUsername();
-//        return "Welcome " + user.getFullName();
         return user;
     }
     @GetMapping("/new")

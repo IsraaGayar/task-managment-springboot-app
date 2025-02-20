@@ -54,17 +54,3 @@ public class AuthService {
         }
     }
 }
-
-//    public User authenticate(LoginUserDTO input) {
-//        try {
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(input.getEmail(), input.getPassword())
-//            );
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//            return (User) authentication.getPrincipal(); // Now safe to cast!
-//        }catch (Exception e) {
-//           System.out.println(e);
-//           return null;
-//        }
-//    }
-//}

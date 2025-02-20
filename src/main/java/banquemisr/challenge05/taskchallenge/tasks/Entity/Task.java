@@ -3,10 +3,7 @@ package banquemisr.challenge05.taskchallenge.tasks.Entity;
 import banquemisr.challenge05.taskchallenge.user.entities.AppUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.UUID;
@@ -27,11 +24,10 @@ public class Task {
     @Column(nullable = true, columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne  // Many tasks to one user (owner)
-    @JoinColumn(name = "owner_id", nullable = false) // Foreign key column
-    private AppUser owner; // The user who owns this task
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private AppUser owner;
 
-//    @Pattern(regexp = "PENDING|IN_PROGRESS|COMPLETED", message = "Invalid status value") // Validation
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = Status.TODO;
@@ -94,9 +90,6 @@ public class Task {
     }
 
     public void setStatus(Status status) {
-//        if (check if status in Status.values) {
-//            throw new MyCustomException("invalid status"); // Create a custom exception
-//        }
         this.status = status;
     }
 

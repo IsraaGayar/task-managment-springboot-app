@@ -13,22 +13,6 @@ import java.util.UUID;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, UUID> , JpaSpecificationExecutor<Task> {
-
-//    @NonNull
-//    @Override
-//    Optional<Task> findById(Long aLong);
-
-//    Optional<Task> findById(UUID id);
     Optional<Task> findById(UUID id);
-
     Page<Task> findAll(Pageable pageable);
-
-
-    //    Page<Task> findByPriority(Task.Priority priority, Pageable pageable);
-//    Page<Task> findByCompleted(Boolean completed, Pageable pageable);
-//    Page<Task> findByPriorityAndCompleted(Task.Priority priority, Boolean completed, Pageable pageable);
-
-
-//    @Override
-//    <S extends Task> List<S> findAll(Example<S> example);
 }
