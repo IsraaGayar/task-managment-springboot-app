@@ -25,7 +25,7 @@ public interface TaskService {
 
     public TaskRetrievalDTO getTask(UUID id) throws CustomAppException;
 
-    Page<TaskRetrievalDTO> getGeniricTasks(Specification<Task> spec, Pageable pageable);
+    Page<TaskRetrievalDTO> getGeniricTasks(Specification<Task> spec, Pageable pageable, AppUser loggedUser);
 
     public void deleteTask(UUID id, AppUser loggedUser) throws CustomAppException;
 }

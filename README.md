@@ -2,9 +2,28 @@
 
 This document provides instructions for building, running, and testing the Task Management System. This system is a Spring Boot application that provides REST APIs for managing tasks, including CRUD operations, user authentication and authorization, validation, error handling, filtering, and pagination.
 
-## Project Overview
+## Project Details
+### Users and Auth
+The System have 2 types of User ==> Admin & User ,
+When Intiating the system both admin_user and main_user are created for testing purposes
 
-The Task Management System is a standalone backend service designed to handle the logic and data management for tasks. It exposes REST APIs for downstream consumers to interact with task data.  This project adheres to the microservices architecture principle using Spring Boot with either Java or Kotlin.
+    - Anyone can signup for a new user (not admin user)
+    - Any user can login
+    - Only Admin users can list users
+    - Any user can retrieve user BUT adminUser ==> can retrieve full detailed user, appUser ==> can retrieve only public data
+
+### Tasks
+Every task have an Owner
+
+    - Any Logged in user can create a task that he OWNs
+    - Any User(normal) can retrieve Only his tasks
+    - Admin User can retrieve any task
+    - all tasks can be filtered by any field
+    - All tasks Listing is paginated with 10 tasks per page, that ca nbe changed as displayed in the postman collection
+    - Any User can edit his task "Priority, status, and/or description"
+    - Admin users can edit ANY Task in the system
+    - Only Admin Users can reassign the task from user to another 
+    - Only Admin Users can delete Any Task
 
 ## Technologies Used
 
@@ -18,7 +37,6 @@ The Task Management System is a standalone backend service designed to handle th
 ## Getting Started
 
 ### Prerequisites
-
 
 *   Java 17
 *   Maven 3.4.2

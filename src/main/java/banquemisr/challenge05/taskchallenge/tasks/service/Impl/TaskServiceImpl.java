@@ -93,15 +93,41 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Page<TaskRetrievalDTO> getGeniricTasks(Specification<Task> spec, Pageable pageable) {
-        Page<Task> tasks = taskRepository.findAll(spec, pageable);
+    public Page<TaskRetrievalDTO> getGeniricTasks(
+            Specification<Task> spec, Pageable pageable, AppUser loggedUser) {
+        Specification<Task> finalSpec = spec;
+
+        if (!loggedUser.hasRole(AppUser.UserRole.ADMIN_ROLE)) {
+            Specification<Task> userTaskSpec = (root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("owner"), loggedUser);
+            if (spec == null) {
+                finalSpec = userTaskSpec;
+            } else {
+                finalSpec = spec.and(userTaskSpec);
+            }
+        }
+
+        Page<Task> tasks = taskRepository.findAll(finalSpec, pageable);
 
         List<TaskRetrievalDTO> taskDTOs = tasks.getContent().stream()
                 .map(this::convertTaskToDTO)
                 .collect(Collectors.toList());
-        Page<TaskRetrievalDTO> taskDTOPage = new PageImpl<>(taskDTOs, pageable, tasks.getTotalElements());
-        return taskDTOPage;
+
+        return new PageImpl<>(taskDTOs, pageable, tasks.getTotalElements());
     }
+
+//
+//        if (!loggedUser.hasRole(AppUser.UserRole.ADMIN_ROLE)){
+//
+//        }
+//        Page<Task> tasks = taskRepository.findAll(spec, pageable);
+//
+//        List<TaskRetrievalDTO> taskDTOs = tasks.getContent().stream()
+//                .map(this::convertTaskToDTO)
+//                .collect(Collectors.toList());
+//        Page<TaskRetrievalDTO> taskDTOPage = new PageImpl<>(taskDTOs, pageable, tasks.getTotalElements());
+//        return taskDTOPage;
+//    }
 
     @Override
     public void deleteTask(UUID id, AppUser loggedUser) throws CustomAppException {

@@ -31,14 +31,15 @@ public class TaskController {
     @GetMapping("/tasks")
     public Page<TaskRetrievalDTO> ListTasks(
             @PageableDefault(page = 0, size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam(required = false) Map<String, String> filters // Map of filter fields and values
-    ) {
+            @RequestParam(required = false) Map<String, String> filters, // Map of filter fields and values,
+            @AuthenticationPrincipal AppUser loggedUser) throws CustomAppException{
+
         List<String> keysToRemove = Arrays.asList("sort", "page", "size");
         filters.keySet().removeAll(keysToRemove);
         Specification<Task> spec = Specification.where(null);
         for (Map.Entry<String, String> entry : filters.entrySet()) {
             spec = spec.and(GenericFilterSpecification.filterBy(entry.getKey(), entry.getValue()));}
-        Page<TaskRetrievalDTO> tasks = taskService.getGeniricTasks(spec, pageable);
+        Page<TaskRetrievalDTO> tasks = taskService.getGeniricTasks(spec, pageable, loggedUser);
         return tasks;
     }
 

@@ -87,7 +87,7 @@ public class AppUser implements UserDetails{
     }
 
     public AppUser() {
-        roles.add(UserRole.USER_ROLE); // Add the initial role
+        this.roles.add(UserRole.USER_ROLE); // Add the initial role
     }
 
     public AppUser(String fullName,
@@ -97,13 +97,14 @@ public class AppUser implements UserDetails{
         this.email = email;
         this.password = password;
         this.username = email;
+        this.roles.add(UserRole.USER_ROLE);
     }
     public enum UserRole {
         USER_ROLE, ADMIN_ROLE
     }
 
     public List<UserRole> getRoles() {
-        return roles;
+        return this.roles;
     }
 
     public void setRoles(List<UserRole> roles) {
