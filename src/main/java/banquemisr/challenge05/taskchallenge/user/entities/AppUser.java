@@ -5,12 +5,14 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="users")
@@ -114,9 +116,8 @@ public class AppUser implements UserDetails{
         }
         this.roles.add(role);
     }
-
-    public boolean isAdmin() {
-        return this.roles.contains(UserRole.ADMIN_ROLE);
+    public boolean hasRole(UserRole role) {
+        return this.roles.contains(role);
     }
 
     @Override
@@ -136,8 +137,9 @@ public class AppUser implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(Collectors.toList());    }
 
     @Override
     public String getPassword() {

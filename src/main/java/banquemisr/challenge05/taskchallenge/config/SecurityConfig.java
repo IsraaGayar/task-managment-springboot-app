@@ -40,8 +40,8 @@ class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/user").authenticated()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/home").permitAll()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(
                         session -> session

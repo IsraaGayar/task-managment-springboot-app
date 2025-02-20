@@ -1,5 +1,6 @@
 package banquemisr.challenge05.taskchallenge.user.service;
 
+import banquemisr.challenge05.taskchallenge.Exceptions.CustomAppException;
 import banquemisr.challenge05.taskchallenge.user.entities.AppUser;
 import banquemisr.challenge05.taskchallenge.user.entities.DTO.FullDetailsUserDto;
 import banquemisr.challenge05.taskchallenge.user.entities.DTO.PublicUserDto;
@@ -7,6 +8,8 @@ import banquemisr.challenge05.taskchallenge.user.entities.DTO.UserCreationDTO;
 import banquemisr.challenge05.taskchallenge.user.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,11 @@ public class UserService implements UserDetailsService {
     public AppUser createAppUser(UserCreationDTO user) {
         AppUser appUser = convertUserDTOToDb(user);
         return userRepository.save(appUser);
+    }
+
+    public Page<AppUser> getusers(Pageable pageable) throws Exception{
+        Page<AppUser> users = userRepository.findAll(pageable);
+        return users;
     }
 
     public Object getUserById(Long id, AppUser loggedUser) {
